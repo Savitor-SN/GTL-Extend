@@ -115,7 +115,7 @@ public class BlackHoleMatterDecompressor extends NoEnergyMultiblockMachine {
         if (!isInfinityDreamEnabled()) return base;
 
         // 每1000B流体翻倍一次，但不超过int最大值
-        long multiplier = eternalbluedream / 1_000_000_000L;
+        long multiplier = eternalbluedream / 1_000_000L;
         return (int) Math.min(base * (1L << multiplier), Integer.MAX_VALUE);
     }
 

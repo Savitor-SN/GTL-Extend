@@ -12,18 +12,18 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.SoundType;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.function.Supplier;
 
 import static cn.qiuye.gtl_extend.api.registries.GTLEXRegistration.REGISTRATE;
 
 import com.tterrag.registrate.util.entry.BlockEntry;
 import com.tterrag.registrate.util.nullness.NonNullSupplier;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 
 public class GTL_Extend_Blocks {
 
-    public static Map<Integer, Supplier<Block>> crmap = new HashMap<>();
+    public static Int2ObjectOpenHashMap<Supplier<?>> crmap = new Int2ObjectOpenHashMap<>();
 
     /**
      * 创建带有自定义属性的技术类方块（如机器外壳）
@@ -83,7 +83,7 @@ public class GTL_Extend_Blocks {
      * @param texture        .
      * @param renderType     .
      * @param baseProperties .
-     * @param targetMap      .
+     * @param map            .
      * @param tier           .
      * @return 方块注册对象
      */
@@ -92,10 +92,9 @@ public class GTL_Extend_Blocks {
                                                       ResourceLocation texture,
                                                       Supplier<Supplier<RenderType>> renderType,
                                                       NonNullSupplier<? extends Block> baseProperties,
-                                                      Map<Integer, Supplier<Block>> targetMap,
-                                                      int tier) {
+                                                      Int2ObjectMap<Supplier<?>> map, int tier) {
         BlockEntry<Block> blockEntry = createCasingBlock(name, texture, renderType, baseProperties);
-        targetMap.put(tier, blockEntry);
+        map.put(tier, blockEntry);
         return blockEntry;
     }
 }
