@@ -8,6 +8,7 @@
   ],
   "mixins": [
     "gtl.GTLGTAddonMixin",
+    "gtl.MultipleRecipesLogicMixin",
     "gtmt.WirelessEnergyMonitorMixin"
   ],
   "injectors": {
