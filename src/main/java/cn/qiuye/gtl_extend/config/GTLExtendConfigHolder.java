@@ -26,6 +26,9 @@ public class GTLExtendConfigHolder {
     @Configurable
     @Configurable.Comment("开启通用AE制造机（修改后请退出重进）")
     public boolean enableGeneralAEManufacturingMachine = false;
+    @Configurable
+    @Configurable.Comment("实体加速")
+    public boolean ticktime = true;
 
     public static void init() {
         if (INSTANCE == null) {

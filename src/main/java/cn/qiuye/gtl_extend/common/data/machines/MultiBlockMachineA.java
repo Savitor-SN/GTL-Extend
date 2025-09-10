@@ -39,8 +39,7 @@ import java.util.function.BiConsumer;
 
 import static com.gregtechceu.gtceu.api.pattern.Predicates.blocks;
 import static com.gregtechceu.gtceu.common.data.GCyMBlocks.CASING_HIGH_TEMPERATURE_SMELTING;
-import static com.gregtechceu.gtceu.common.data.GTBlocks.ADVANCED_COMPUTER_CASING;
-import static com.gregtechceu.gtceu.common.data.GTBlocks.HIGH_POWER_CASING;
+import static com.gregtechceu.gtceu.common.data.GTBlocks.*;
 
 import appeng.core.AppEng;
 
@@ -59,6 +58,7 @@ public class MultiBlockMachineA {
     public static final MultiblockMachineDefinition DIMENSIONALLY_TRANSCENDENT_DISSOLVING_TANK;
     public static final MultiblockMachineDefinition GENERAL_PURPOSE_STEAM_ENGINE;
     public static final MultiblockMachineDefinition GENERAL_PURPOSE_AE_PRODUCTION;
+    public static final MultiblockMachineDefinition QUANTUM_COMPUTER;
 
     static {
         GTLEXRegistration.REGISTRATE.creativeModeTab(() -> GTL_Extend_CreativeModeTabs.MACHINES_ITEM);
@@ -109,7 +109,8 @@ public class MultiBlockMachineA {
                 .recipeType(GTRecipeTypes.FURNACE_RECIPES)
                 .recipeType(GTRecipeTypes.EXTRACTOR_RECIPES)
                 .appearanceBlock(() -> GetRegistries.getBlock("gtceu:steam_machine_casing"))
-                .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH, GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.PERFECT_OVERCLOCK_SUBTICK))
+                .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH,
+                        GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.PERFECT_OVERCLOCK_SUBTICK))
                 .recipeModifier((machine, recipe, params, result) -> {
                     GTRecipe recipe1 = recipe.copy();
                     recipe1.duration = 1;
@@ -160,7 +161,7 @@ public class MultiBlockMachineA {
                 .pattern(definition -> Void_Pump_MultiBlockStructure.VOID_PUMP
                         .where('~', Predicates.controller(blocks(definition.getBlock())))
                         .where(" ", Predicates.any())
-                        .where('A', Predicates.blocks(GTBlocks.HIGH_POWER_CASING.get())
+                        .where('A', Predicates.blocks(HIGH_POWER_CASING.get())
                                 .or(Predicates.abilities(PartAbility.EXPORT_ITEMS).setPreviewCount(1))
                                 .or(Predicates.abilities(PartAbility.IMPORT_ITEMS).setPreviewCount(1))
                                 .or(Predicates.abilities(PartAbility.EXPORT_FLUIDS).setPreviewCount(1))
@@ -196,7 +197,7 @@ public class MultiBlockMachineA {
                         .where('D', Predicates.blocks(GetRegistries.getBlock("minecraft:pink_concrete"))
                                 .or(Predicates.abilities(PartAbility.EXPORT_ITEMS).setMaxGlobalLimited(1))
                                 .or(Predicates.abilities(PartAbility.EXPORT_FLUIDS).setMaxGlobalLimited(1)))
-                        .where('E', Predicates.blocks(GTBlocks.HIGH_POWER_CASING.get())
+                        .where('E', Predicates.blocks(HIGH_POWER_CASING.get())
                                 .or(Predicates.abilities(PartAbility.PARALLEL_HATCH).setMaxGlobalLimited(1))
                                 .or(Predicates.abilities(PartAbility.INPUT_ENERGY).setMaxGlobalLimited(2))
                                 .or(Predicates.abilities(PartAbility.INPUT_LASER).setMaxGlobalLimited(1)))
@@ -269,7 +270,7 @@ public class MultiBlockMachineA {
                 .pattern(definition -> BlackHoleMatterDecompressor_MultiBlockStructure.BLACK_HOLE_DECOMPRESSION
                         .where('~', Predicates.controller(blocks(definition.getBlock())))
                         .where(" ", Predicates.any())
-                        .where('A', Predicates.blocks(GTBlocks.HIGH_POWER_CASING.get())
+                        .where('A', Predicates.blocks(HIGH_POWER_CASING.get())
                                 .or(Predicates.abilities(PartAbility.EXPORT_ITEMS).setPreviewCount(1))
                                 .or(Predicates.abilities(PartAbility.IMPORT_ITEMS).setPreviewCount(1))
                                 .or(Predicates.abilities(PartAbility.EXPORT_FLUIDS).setPreviewCount(1))
@@ -310,7 +311,7 @@ public class MultiBlockMachineA {
                 .pattern(definition -> BlackHoleMatterDecompressor_MultiBlockStructure.BLACK_HOLE_DECOMPRESSION
                         .where('~', Predicates.controller(blocks(definition.getBlock())))
                         .where(" ", Predicates.any())
-                        .where('A', Predicates.blocks(GTBlocks.HIGH_POWER_CASING.get())
+                        .where('A', Predicates.blocks(HIGH_POWER_CASING.get())
                                 .or(Predicates.abilities(PartAbility.EXPORT_ITEMS).setPreviewCount(1))
                                 .or(Predicates.abilities(PartAbility.IMPORT_ITEMS).setPreviewCount(1))
                                 .or(Predicates.abilities(PartAbility.EXPORT_FLUIDS).setPreviewCount(1))
@@ -409,6 +410,46 @@ public class MultiBlockMachineA {
                         .build())
                 .workableCasingRenderer(GTCEu.id("block/casings/solid/machine_casing_clean_stainless_steel"),
                         GTCEu.id("block/multiblock/generator/large_gas_turbine"))
+                .register();
+
+        QUANTUM_COMPUTER = GTLEXRegistration.REGISTRATE.multiblock("quantum_computer", GTLEXQuantumComputer::new)
+                .rotationState(RotationState.NON_Y_AXIS)
+                .recipeType(GTRecipeTypes.DUMMY_RECIPES)
+                .tooltips(Component.literal(TextUtil.full_color("量子计算机 - 提供强大的计算能力")))
+                .tooltips(Component.literal("算力产出公式:"))
+                .tooltips(Component.literal("  - 基础算力: 1024 ~ " + Integer.MAX_VALUE + " CWU/t"))
+                .tooltips(Component.literal("  - 线圈温度影响: 50% (1K-96000K)"))
+                .tooltips(Component.literal("  - 电路配置影响: 50% (1-8)"))
+                .tooltips(Component.literal("  - 最终算力 = 1024 + (MAX_INT-1024) × (0.5×(温度/96000) + 0.5×(电路/8))"))
+                .tooltips(Component.literal("能耗公式:"))
+                .tooltips(Component.literal("  - 基础能耗: 2,147,483,647 EU/t ~ 10^20 EU/t"))
+                .tooltips(Component.literal("  - 能耗随算力指数增长: log10(E) = A×算力 + B"))
+                .tooltips(Component.literal("  - 其中A和B为常数，确保算力从1024到MAX_INT时"))
+                .tooltips(Component.literal("    能耗从2,147,483,647 EU/t增长到10^20 EU/t"))
+                .tooltips(Component.literal("冷却液消耗:"))
+                .tooltips(Component.literal("  - 每1M CWU/t消耗1L/t 极寒之凛冰"))
+                .tooltips(Component.literal("  - 冷却液不足会导致机器停止工作"))
+                .tooltips(Component.literal("特殊功能:"))
+                .tooltips(Component.literal("  - 需要绑定玩家无线电网供电"))
+                .tooltips(Component.literal("  - 自动从多方块结构中的流体容器消耗冷却液"))
+                .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH,
+                        GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.PERFECT_OVERCLOCK_SUBTICK))
+                .appearanceBlock(COMPUTER_CASING)
+                .tooltipBuilder(GTL_EX_ADD)
+                .pattern(definition -> GTLMachines.DTPF
+                        .where('a', Predicates.controller(Predicates.blocks(definition.get())))
+                        .where('e', Predicates.blocks(COMPUTER_CASING.get())
+                                .or(Predicates.abilities(PartAbility.IMPORT_FLUIDS).setMaxGlobalLimited(1))
+                                .or(Predicates.abilities(PartAbility.MAINTENANCE).setExactLimit(1))
+                                .or(Predicates.abilities(PartAbility.COMPUTATION_DATA_TRANSMISSION).setExactLimit(1)))
+                        .where('b', Predicates.blocks(HIGH_POWER_CASING.get()))
+                        .where('C', Predicates.heatingCoils())
+                        .where('d', Predicates.blocks(GTBlocks.COMPUTER_CASING.get()))
+                        .where("s", Predicates.blocks(GTBlocks.COMPUTER_HEAT_VENT.get()))
+                        .where(" ", Predicates.any())
+                        .build())
+                .sidedWorkableCasingRenderer("block/casings/hpca/computer_casing",
+                        GTCEu.id("block/multiblock/hpca"))
                 .register();
     }
 

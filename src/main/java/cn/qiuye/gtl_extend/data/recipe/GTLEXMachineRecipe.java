@@ -7,6 +7,7 @@ import cn.qiuye.gtl_extend.common.data.machines.MultiBlockMachineA;
 import cn.qiuye.gtl_extend.config.GTLExtendConfigHolder;
 
 import org.gtlcore.gtlcore.api.data.tag.GTLTagPrefix;
+import org.gtlcore.gtlcore.common.data.GTLBlocks;
 import org.gtlcore.gtlcore.common.data.GTLItems;
 import org.gtlcore.gtlcore.common.data.GTLMaterials;
 import org.gtlcore.gtlcore.common.data.machines.AdvancedMultiBlockMachine;
@@ -14,8 +15,10 @@ import org.gtlcore.gtlcore.common.data.machines.GeneratorMachine;
 import org.gtlcore.gtlcore.utils.Registries;
 
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
+import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKeys;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
+import com.gregtechceu.gtceu.common.data.machines.GTResearchMachines;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
 
@@ -31,7 +34,10 @@ import static com.gregtechceu.gtceu.api.GTValues.*;
 import static com.gregtechceu.gtceu.common.data.GTMaterials.*;
 import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.ASSEMBLER_RECIPES;
 import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.ASSEMBLY_LINE_RECIPES;
+import static org.gtlcore.gtlcore.common.data.GTLMaterials.*;
 import static org.gtlcore.gtlcore.common.data.GTLRecipeTypes.SUPRACHRONAL_ASSEMBLY_LINE_RECIPES;
+
+import appeng.core.definitions.AEBlocks;
 
 public class GTLEXMachineRecipe {
 
@@ -107,6 +113,7 @@ public class GTLEXMachineRecipe {
                 .duration(4096)
                 .EUt(V[UHV])
                 .save(provider);
+
         ASSEMBLY_LINE_RECIPES.recipeBuilder("platinum_based_rocessing_hub")
                 .inputItems(Registries.getItem("gtceu:chemical_plant"), 16)
                 .inputItems(Registries.getItem("gtceu:large_distillery"), 4)
@@ -128,6 +135,37 @@ public class GTLEXMachineRecipe {
                         .dataStack(GTItems.TOOL_DATA_MODULE.asStack())
                         .EUt(VA[LuV])
                         .CWUt(128))
+                .save(provider);
+
+        ASSEMBLY_LINE_RECIPES.recipeBuilder("quantum_computer")
+                .inputItems(AEBlocks.CONDENSER.stack())
+                .inputItems(GTLBlocks.CRAFTING_STORAGE_MAX, 10)
+                .inputItems(GTResearchMachines.HPCA_BRIDGE_COMPONENT, 10)
+                .inputItems(GTItems.QUANTUM_MAINFRAME_ZPM, 64)
+                .inputItems(AEBlocks.CREATIVE_ENERGY_CELL.stack(), 10)
+                .inputItems(Registries.getItem("mae2:256x_crafting_accelerator"), 10)
+                .inputItems(GTItems.QUBIT_CENTRAL_PROCESSING_UNIT, 64)
+                .inputItems(GTItems.QUANTUM_EYE, 64)
+                .inputItems(GTItems.QUANTUM_STAR)
+                .inputItems(Registries.getItem("kubejs:optical_mainframe"), 64)
+                .inputItems(ChemicalHelper.get(GTLTagPrefix.nanoswarm, Neutronium), 10)
+                .inputItems(GTItems.FIELD_GENERATOR_UEV, 64)
+                .inputItems(GTResearchMachines.HPCA_ADVANCED_COMPUTATION_COMPONENT, 64)
+                .inputItems(GTResearchMachines.HIGH_PERFORMANCE_COMPUTING_ARRAY, 10)
+                .inputItems(GTItems.EMITTER_UEV, 64)
+                .inputItems(GTResearchMachines.HPCA_ACTIVE_COOLER_COMPONENT, 64)
+                .inputFluids(Naquadria.getFluid(10000))
+                .inputFluids(Orichalcum.getFluid(FluidStorageKeys.PLASMA, 6000))
+                .inputFluids(Lawrencium.getFluid(1000))
+                .inputFluids(Nobelium.getFluid(3000))
+                .outputItems(MultiBlockMachineA.QUANTUM_COMPUTER)
+                .duration(6400)
+                .EUt(V[UHV])
+                .duration(6400)
+                .stationResearch(b -> b.researchStack(GTResearchMachines.HIGH_PERFORMANCE_COMPUTING_ARRAY.asStack())
+                        .dataStack(GTItems.TOOL_DATA_MODULE.asStack())
+                        .EUt(VA[UHV])
+                        .CWUt(256))
                 .save(provider);
 
         SUPRACHRONAL_ASSEMBLY_LINE_RECIPES.recipeBuilder("black_hole_matter_decompressor")
