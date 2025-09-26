@@ -43,7 +43,7 @@ public class DimensionalPower extends NoEnergyMultiblockMachine implements IMach
     private final BigInteger longmax = BigInteger.valueOf(Long.MAX_VALUE);
     protected ConditionalSubscriptionHandler machineStorage;
     BigInteger two = BigInteger.valueOf(2);
-    private final BigInteger MAX = two.pow(Integer.MAX_VALUE);
+    final BigInteger MAX = two.pow(Integer.MAX_VALUE - 1);
     @Persisted
     private UUID userid;
     @Persisted
