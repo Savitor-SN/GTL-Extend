@@ -11,6 +11,14 @@ import dev.toma.configuration.config.format.ConfigFormats;
 public class GTLExtendConfigHolder {
 
     public static GTLExtendConfigHolder INSTANCE;
+
+    public static void init() {
+        if (INSTANCE == null) {
+            INSTANCE = Configuration.registerConfig(GTLExtendConfigHolder.class,
+                    ConfigFormats.yaml()).getConfigInstance();
+        }
+    }
+
     @Configurable
     @Configurable.Comment("开启永恒蓝梦和蓝梦主机合成表的注册，注意这可能会影响游戏平衡（修改后请退出重进）")
     public boolean enableInfinityDreamAndDreamHostCrafting = false;
@@ -29,11 +37,4 @@ public class GTLExtendConfigHolder {
     @Configurable
     @Configurable.Comment("实体加速")
     public boolean ticktime = true;
-
-    public static void init() {
-        if (INSTANCE == null) {
-            INSTANCE = Configuration.registerConfig(GTLExtendConfigHolder.class,
-                    ConfigFormats.yaml()).getConfigInstance();
-        }
-    }
 }

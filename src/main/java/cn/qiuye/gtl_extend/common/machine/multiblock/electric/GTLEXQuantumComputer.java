@@ -110,7 +110,7 @@ public class GTLEXQuantumComputer extends NoEnergyMultiblockMachine
 
     private int allocatedCWUt(int cwut, boolean simulate) {
         if (totalCWU < getMaxCWUt()) {
-            if (WirelessEnergyManager.getUserEU(userId).compareTo(BigInteger.ZERO) > 0)
+            if (this.userId != null)
                 totalCWU += getMaxCWUt();
             maxCWUt = 0;
         }
@@ -283,10 +283,10 @@ public class GTLEXQuantumComputer extends NoEnergyMultiblockMachine
                         NumberUtils.formatBigIntegerNumberOrSic(WirelessEnergyManager.getUserEU(userId))));
             }
             // 公共信息
+            textList.add(Component.literal("启动耗能：" + NumberUtils.formatBigIntegerNumberOrSic(energy()) + "EU"));
             textList.add(Component.translatable("gtceu.multiblock.blast_furnace.max_temperature",
                     Component.translatable(FormattingUtil.formatNumbers(coilType.getCoilTemperature()) + "K")
                             .setStyle(Style.EMPTY.withColor(ChatFormatting.RED))));
-            textList.add(Component.literal("启动耗能：" + NumberUtils.formatBigIntegerNumberOrSic(energy()) + "EU"));
             textList.add(Component.translatable(
                     "gtceu.multiblock.hpca.computation", Component.literal(
                             lastAllocatedCWUt + " / " +

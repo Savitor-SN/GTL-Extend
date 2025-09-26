@@ -105,7 +105,6 @@ public class MultiBlockMachineA {
                 .recipeType(GTRecipeTypes.THERMAL_CENTRIFUGE_RECIPES)
                 .recipeType(GTRecipeTypes.CHEMICAL_BATH_RECIPES)
                 .recipeType(GTRecipeTypes.ORE_WASHER_RECIPES)
-                .recipeType(GTRecipeTypes.LARGE_BOILER_RECIPES)
                 .recipeType(GTRecipeTypes.FURNACE_RECIPES)
                 .recipeType(GTRecipeTypes.EXTRACTOR_RECIPES)
                 .appearanceBlock(() -> GetRegistries.getBlock("gtceu:steam_machine_casing"))
@@ -114,12 +113,12 @@ public class MultiBlockMachineA {
                 .recipeModifier((machine, recipe, params, result) -> {
                     GTRecipe recipe1 = recipe.copy();
                     recipe1.duration = 1;
-                    recipe1 = GTRecipeModifiers.fastParallel(machine, recipe1, 4096, false).getFirst();
+                    recipe1 = GeneralPurposeSteamEngine.recipeModifier(machine, recipe1, 4096);
                     return recipe1;
                 })
                 .tooltips(Component.literal(TextUtil.full_color("暴力.....")))
                 .tooltips(Component.literal(TextUtil.full_color("设置所有配方时间为1t,自带4096并行")))
-                .tooltips(Component.translatable("gtceu.machine.available_recipe_map_14.tooltip",
+                .tooltips(Component.translatable("gtceu.machine.available_recipe_map_13.tooltip",
                         Component.translatable("gtceu.lava_furnace"),
                         Component.translatable("gtceu.forge_hammer"),
                         Component.translatable("gtceu.compressor"),
@@ -131,7 +130,6 @@ public class MultiBlockMachineA {
                         Component.translatable("gtceu.thermal_centrifuge"),
                         Component.translatable("gtceu.chemical_bath"),
                         Component.translatable("gtceu.ore_washer"),
-                        Component.translatable("gtceu.large_boiler"),
                         Component.translatable("gtceu.electric_furnace"),
                         Component.translatable("gtceu.extractor")))
                 .tooltipBuilder(GTL_EX_ADD)
@@ -227,6 +225,7 @@ public class MultiBlockMachineA {
                 .tooltips(Component.literal(TextUtil.full_color("26个线圈就可以让你获得无与伦比的并行和跨配方并行")))
                 .tooltips(Component.literal(TextUtil.full_color("所有配方都为1s")))
                 .tooltips(Component.translatable("gtceu.multiblock.laser.tooltip"))
+                .tooltips(Component.translatable("gtceu.machine.multiple_recipes.tooltip"))
                 .tooltips(Component.translatable("gtceu.machine.perfect_oc"))
                 .tooltips(Component.translatable("gtceu.machine.available_recipe_map_3.tooltip",
                         Component.translatable("gtceu.electric_blast_furnace"),
@@ -259,10 +258,38 @@ public class MultiBlockMachineA {
                 .recipeType(GTL_Extend_RecipeTypes.HORIZON_MATTER_DECOMPRESSION_RECIPES)
                 .recipeModifier((machine, recipe, params, result) -> ((BlackHoleMatterDecompressor) machine).recipeModifier(machine, recipe))
                 .tooltips(Component.literal(TextUtil.full_color("创造一个黑洞，并从里面获取无限的资源")))
-                .tooltips(Component.literal("这台机器需要巨量的EU，无法使用常规手段供能"))
-                .tooltips(Component.literal("由无线电网直接供电，具体数值可在GUI內查看"))
-                .tooltips(Component.literal(TextUtil.full_color("如果开启蓝梦模式则执行特殊并行")))
-                .tooltips(Component.literal(TextUtil.full_color("每多提供1000B液态永恒蓝梦则翻倍并行")))
+                .tooltips(Component.literal(""))
+                .tooltips(Component.literal("工作模式:"))
+                .tooltips(Component.literal("  - 功率模式: 基础并行，能耗较低"))
+                .tooltips(Component.literal("  - 蓝梦模式: 消耗永恒蓝梦流体获得指数级并行"))
+                .tooltips(Component.literal(""))
+                .tooltips(Component.literal("能耗公式:"))
+                .tooltips(Component.literal("  - 基础能耗: 5.28P EU/启动"))
+                .tooltips(Component.literal("  - 超频能耗 = 基础能耗 × 32^(超频次数)"))
+                .tooltips(Component.literal("  - 电路1: 无超频 (1倍)"))
+                .tooltips(Component.literal("  - 电路2: 4倍超频"))
+                .tooltips(Component.literal("  - 电路3: 16倍超频"))
+                .tooltips(Component.literal("  - 电路4: 64倍超频"))
+                .tooltips(Component.literal(""))
+                .tooltips(Component.literal("并行计算:"))
+                .tooltips(Component.literal("  - 基础并行 = 电路编号^8 (电路1固定为64)"))
+                .tooltips(Component.literal("  - 蓝梦模式: 每1000B永恒蓝梦翻倍并行"))
+                .tooltips(Component.literal("  - 最大并行: Integer.MAX_VALUE"))
+                .tooltips(Component.literal(""))
+                .tooltips(Component.literal("配方时间:"))
+                .tooltips(Component.literal("  - 基础时间: 4800 ticks"))
+                .tooltips(Component.literal("  - 实际时间 = 4800 / 2^(电路编号)"))
+                .tooltips(Component.literal(""))
+                .tooltips(Component.literal("功率倍率:"))
+                .tooltips(Component.literal("  - 电路1: 1倍"))
+                .tooltips(Component.literal("  - 电路2: 32倍"))
+                .tooltips(Component.literal("  - 电路3: 1024倍"))
+                .tooltips(Component.literal("  - 电路4: 32768倍"))
+                .tooltips(Component.literal(""))
+                .tooltips(Component.literal("特殊功能:"))
+                .tooltips(Component.literal("  - 需要绑定玩家无线电网供电"))
+                .tooltips(Component.literal("  - 蓝梦模式下自动消耗永恒蓝梦流体"))
+                .tooltips(Component.literal("  - 功率模式下限制最大能耗为电网1%"))
                 .tooltips(Component.translatable("gtceu.machine.available_recipe_map_2.tooltip",
                         Component.translatable("gtceu.cosmos_simulation"),
                         Component.translatable("gtceu.horizon_matter_decompression")))
@@ -302,9 +329,23 @@ public class MultiBlockMachineA {
                 .recipeType(GTL_Extend_RecipeTypes.DIMENSIONALPOWER_RECIPES)
                 .recipeModifier((machine, recipe, params, result) -> ((DimensionalPower) machine).recipeModifier(recipe))
                 .tooltips(Component.literal(TextUtil.full_color("创造一个高维粒子，并从里面获取无限的电量")))
-                .tooltips(Component.literal("这台机器输出巨量的EU，无法使用常规手段提取"))
-                .tooltips(Component.literal("直接向无线电网供电，具体数值可在GUI內查看"))
-                .tooltips(Component.literal(TextUtil.full_color("基础发电Long.MAX_VALUE，最大发电为2的16384次方")))
+                .tooltips(Component.literal(""))
+                .tooltips(Component.literal("发电量公式:"))
+                .tooltips(Component.literal("  - 基础发电: " + Long.MAX_VALUE + " EU/t"))
+                .tooltips(Component.literal("  - 最大发电: 2^" + Integer.MAX_VALUE + " EU/t"))
+                .tooltips(Component.literal("  - 最终发电 = 基础发电 × 并行^(超频倍数)"))
+                .tooltips(Component.literal(""))
+                .tooltips(Component.literal("电路配置影响:"))
+                .tooltips(Component.literal("  - 并行 = 电路编号^8 (电路1固定为64)"))
+                .tooltips(Component.literal("  - 超频倍数: 线性增长，电路1为1000倍，每级增加20000倍"))
+                .tooltips(Component.literal("  - 电路12可达约220000倍超频"))
+                .tooltips(Component.literal(""))
+                .tooltips(Component.literal("特殊功能:"))
+                .tooltips(Component.literal("  - 直接向绑定玩家的无线电网供电"))
+                .tooltips(Component.literal("  - 无法使用常规能量舱提取电量"))
+                .tooltips(Component.literal("  - 发电量受电路配置精确控制"))
+                .tooltips(Component.literal(""))
+                .tooltips(Component.literal("具体电路效果请在GUI中查看"))
                 .tooltips(Component.translatable("gtceu.machine.available_recipe_map_1.tooltip",
                         Component.translatable("gtceu.dimensional_power")))
                 .tooltipBuilder(GTL_EX_ADD)

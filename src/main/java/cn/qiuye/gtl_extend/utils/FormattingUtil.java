@@ -12,11 +12,11 @@ public class FormattingUtil {
     public static final DecimalFormat DECIMAL_FORMAT_2F = new DecimalFormat("#,##0.##");
     public static final DecimalFormat DECIMAL_FORMAT_SIC_2F = new DecimalFormat("0.00E00");
 
-    public static String formatNumberReadable(long number) {
+    public static String formatNumberReadable(double number) {
         return formatNumberReadable(number, false);
     }
 
-    public static String formatNumberReadable(long number, boolean milli) {
+    public static String formatNumberReadable(double number, boolean milli) {
         return formatNumberReadable(number, milli, DECIMAL_FORMAT_1F, null);
     }
 

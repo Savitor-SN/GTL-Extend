@@ -27,15 +27,15 @@ public class Domain {
         poseStack.translate(x, y, z);
     }
 
-    static void pushPose(float tick, PoseStack poseStack, MultiBufferSource buffer, ResourceLocation blackholeModel) {
+    static void pushPose(float tick, PoseStack poseStack, MultiBufferSource buffer, ResourceLocation Model) {
         poseStack.pushPose();
-        poseStack.scale(500.0F, 500.0F, 500.0F);
+        poseStack.scale(50.0F, 50.0F, 50.0F);
         poseStack.mulPose(new Quaternionf().fromAxisAngleDeg(0F, 1F, 1F, (tick / 2) % 360F));
         ClientUtil.modelRenderer().renderModel(
                 poseStack.last(),
                 buffer.getBuffer(RenderType.translucent()),
                 null,
-                ClientUtil.getBakedModel(blackholeModel),
+                ClientUtil.getBakedModel(Model),
                 1.0F, 1.0F, 1.0F,
                 LightTexture.FULL_BRIGHT,
                 OverlayTexture.NO_OVERLAY,

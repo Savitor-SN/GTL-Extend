@@ -97,8 +97,9 @@ public class BlackHoleMatterDecompressor extends NoEnergyMultiblockMachine {
     // 获取超频次数（电路配置映射）
     private int calculateOverclockTimes() {
         return switch (Math.min(oc, 4)) {
-            case 3 -> 2;
-            case 4 -> 3;
+            case 2 -> 4;
+            case 3 -> 16;
+            case 4 -> 64;
             default -> 1;
         };
     }

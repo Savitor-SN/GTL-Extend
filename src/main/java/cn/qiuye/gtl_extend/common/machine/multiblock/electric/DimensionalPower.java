@@ -43,7 +43,7 @@ public class DimensionalPower extends NoEnergyMultiblockMachine implements IMach
     private final BigInteger longmax = BigInteger.valueOf(Long.MAX_VALUE);
     protected ConditionalSubscriptionHandler machineStorage;
     BigInteger two = BigInteger.valueOf(2);
-    private final BigInteger MAX = two.pow(4194304);
+    private final BigInteger MAX = two.pow(Integer.MAX_VALUE);
     @Persisted
     private UUID userid;
     @Persisted
@@ -133,20 +133,15 @@ public class DimensionalPower extends NoEnergyMultiblockMachine implements IMach
 
     // 获取超频次数（电路配置映射）
     private int calculateOverclockTimes(int circuitConfig) {
-        return switch (Math.min(circuitConfig, 12)) {
-            case 2 -> 4;
-            case 3 -> 8;
-            case 4 -> 16;
-            case 5 -> 32;
-            case 6 -> 64;
-            case 7 -> 128;
-            case 8 -> 256;
-            case 9 -> 512;
-            case 10 -> 1024;
-            case 11 -> 32768;
-            case 12 -> 65536;
-            default -> 2;
-        };
+        // 确保电路配置在有效范围内 (1-12)
+        circuitConfig = Math.max(1, Math.min(circuitConfig, 12));
+
+        // 线性公式: 基础倍率1000倍，每增加一级电路配置增加约20000倍
+        // 电路1: 1000倍，电路12: 1000 + 11*20000 = 221000倍
+        int baseMultiplier = 1000;
+        int multiplierPerLevel = 20000;
+
+        return baseMultiplier + (circuitConfig - 1) * multiplierPerLevel;
     }
 
     private BigInteger outEUt() {
