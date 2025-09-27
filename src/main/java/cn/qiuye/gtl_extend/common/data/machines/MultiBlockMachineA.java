@@ -11,18 +11,22 @@ import cn.qiuye.gtl_extend.common.data.machines.MultiBlock.BlackHoleMatterDecomp
 import cn.qiuye.gtl_extend.common.data.machines.MultiBlock.Cattle_cattle_machine.Cattle_cattle_machine_MultiBlockStructure;
 import cn.qiuye.gtl_extend.common.data.machines.MultiBlock.MultiBlockStructure;
 import cn.qiuye.gtl_extend.common.data.machines.MultiBlock.Platinum_basedProcessingHub.Platinum_basedProcessingHub_MultiBlockStructure;
+import cn.qiuye.gtl_extend.common.data.machines.MultiBlock.QuantumComputer.QuantumComputer;
 import cn.qiuye.gtl_extend.common.data.machines.MultiBlock.Void_Pump.Void_Pump_MultiBlockStructure;
 import cn.qiuye.gtl_extend.common.machine.multiblock.electric.*;
 import cn.qiuye.gtl_extend.common.machine.multiblock.steam.GeneralPurposeSteamEngine;
 import cn.qiuye.gtl_extend.config.GTLExtendConfigHolder;
 
 import org.gtlcore.gtlcore.api.pattern.GTLPredicates;
+import org.gtlcore.gtlcore.common.data.GTLBlocks;
 import org.gtlcore.gtlcore.common.data.GTLMachines;
 import org.gtlcore.gtlcore.common.data.GTLRecipeTypes;
 import org.gtlcore.gtlcore.utils.TextUtil;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.RotationState;
+import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
+import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
@@ -30,18 +34,20 @@ import com.gregtechceu.gtceu.api.pattern.Predicates;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.OverclockingLogic;
 import com.gregtechceu.gtceu.common.data.*;
+import com.gregtechceu.gtceu.common.data.machines.GTResearchMachines;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.Blocks;
 
 import java.util.List;
 import java.util.function.BiConsumer;
 
 import static com.gregtechceu.gtceu.api.pattern.Predicates.blocks;
-import static com.gregtechceu.gtceu.common.data.GCyMBlocks.CASING_HIGH_TEMPERATURE_SMELTING;
 import static com.gregtechceu.gtceu.common.data.GTBlocks.*;
 
 import appeng.core.AppEng;
+import appeng.core.definitions.AEBlocks;
 
 public class MultiBlockMachineA {
 
@@ -113,7 +119,7 @@ public class MultiBlockMachineA {
                 .recipeModifier((machine, recipe, params, result) -> {
                     GTRecipe recipe1 = recipe.copy();
                     recipe1.duration = 1;
-                    recipe1 = GeneralPurposeSteamEngine.recipeModifier(machine, recipe1, 4096);
+                    recipe1 = GTRecipeModifiers.fastParallel(machine, recipe1, 4096, false).getFirst();
                     return recipe1;
                 })
                 .tooltips(Component.literal(TextUtil.full_color("暴力.....")))
@@ -209,7 +215,7 @@ public class MultiBlockMachineA {
 
         SUPERFLUID_GENERAL_ENERGY_FURNACE = GTLEXRegistration.REGISTRATE.multiblock("superfluid_general_energy_furnace", GTLEXSuperfluidGeneralEnergyFurnaceMachine::new)
                 .rotationState(RotationState.NON_Y_AXIS)
-                .appearanceBlock(CASING_HIGH_TEMPERATURE_SMELTING)
+                .appearanceBlock(GCyMBlocks.CASING_HIGH_TEMPERATURE_SMELTING)
                 .recipeType(GTRecipeTypes.BLAST_RECIPES)
                 .recipeType(GTRecipeTypes.ALLOY_SMELTER_RECIPES)
                 .recipeType(GCyMRecipeTypes.ALLOY_BLAST_RECIPES)
@@ -467,17 +473,34 @@ public class MultiBlockMachineA {
                         GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.PERFECT_OVERCLOCK_SUBTICK))
                 .appearanceBlock(COMPUTER_CASING)
                 .tooltipBuilder(GTL_EX_ADD)
-                .pattern(definition -> GTLMachines.DTPF
-                        .where('a', Predicates.controller(Predicates.blocks(definition.get())))
-                        .where('e', Predicates.blocks(COMPUTER_CASING.get())
+                .pattern(definition -> QuantumComputer.PATTERN
+                        .where('H', Predicates.controller(Predicates.blocks(definition.get())))
+                        .where(' ', Predicates.any())
+                        .where('A', Predicates.blocks(HIGH_POWER_CASING.get())
                                 .or(Predicates.abilities(PartAbility.IMPORT_FLUIDS).setMaxGlobalLimited(1))
                                 .or(Predicates.abilities(PartAbility.MAINTENANCE).setExactLimit(1))
                                 .or(Predicates.abilities(PartAbility.COMPUTATION_DATA_TRANSMISSION).setExactLimit(1)))
-                        .where('b', Predicates.blocks(HIGH_POWER_CASING.get()))
-                        .where('C', Predicates.heatingCoils())
-                        .where('d', Predicates.blocks(GTBlocks.COMPUTER_CASING.get()))
-                        .where("s", Predicates.blocks(GTBlocks.COMPUTER_HEAT_VENT.get()))
-                        .where(" ", Predicates.any())
+                        .where('B', Predicates.blocks(GTLBlocks.HSSS_REINFORCED_BOROSILICATE_GLASS.get()))
+                        .where('C', Predicates.blocks(GTBlocks.COMPUTER_HEAT_VENT.get()))
+                        .where('D', Predicates.blocks(Blocks.REINFORCED_DEEPSLATE))
+                        .where('E', Predicates.blocks(GTLBlocks.IRIDIUM_CASING.get()))
+                        .where('F', Predicates.blocks(GCyMBlocks.CASING_LASER_SAFE_ENGRAVING.get()))
+                        .where('G', Predicates.blocks(Blocks.NETHERITE_BLOCK))
+                        .where('I', Predicates.blocks(GetRegistries.getBlock("kubejs:spacetime_compression_field_generator")))
+                        .where('J', Predicates.blocks(Blocks.BEACON))
+                        .where('K', Predicates.blocks(AEBlocks.QUARTZ_VIBRANT_GLASS.block()))
+                        .where('L', Predicates.blocks(Blocks.GLOWSTONE))
+                        .where('M', Predicates.heatingCoils())
+                        .where('N', Predicates.blocks(GTBlocks.MACHINE_CASING_EV.get()))
+                        .where('O', Predicates.blocks(GTLBlocks.SUPER_COOLER_COMPONENT.get()))
+                        .where('P', Predicates.blocks(FUSION_GLASS.get()))
+                        .where('Q', Predicates.blocks(Blocks.CHAIN))
+                        .where('R', Predicates.blocks(ChemicalHelper.getBlock(TagPrefix.frameGt, GTMaterials.Tritanium)))
+                        .where('S', Predicates.blocks(ChemicalHelper.getBlock(TagPrefix.block, GTMaterials.NetherStar)))
+                        .where('T', Predicates.blocks(GTBlocks.CASING_STAINLESS_CLEAN.get()))
+                        .where('U', Predicates.blocks(GTResearchMachines.HPCA_HEAT_SINK_COMPONENT.get()))
+                        .where('V', Predicates.blocks(GTL_Extend_Blocks.DIMENSION_CORE.get()))
+                        .where('W', Predicates.blocks(GTBlocks.ADVANCED_COMPUTER_CASING.get()))
                         .build())
                 .sidedWorkableCasingRenderer("block/casings/hpca/computer_casing",
                         GTCEu.id("block/multiblock/hpca"))

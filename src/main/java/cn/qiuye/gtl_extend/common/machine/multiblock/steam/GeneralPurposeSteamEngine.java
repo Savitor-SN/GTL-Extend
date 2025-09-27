@@ -8,17 +8,13 @@ import com.gregtechceu.gtceu.api.gui.fancy.FancyMachineUIWidget;
 import com.gregtechceu.gtceu.api.gui.fancy.IFancyUIProvider;
 import com.gregtechceu.gtceu.api.gui.fancy.TooltipsPanel;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
-import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IFancyUIMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IDisplayUIMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.steam.SteamEnergyRecipeHandler;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
-import com.gregtechceu.gtceu.api.recipe.GTRecipe;
-import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
-import com.gregtechceu.gtceu.common.data.GTRecipeModifiers;
 
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
 import com.lowdragmc.lowdraglib.gui.widget.*;
@@ -40,7 +36,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 import static org.gtlcore.gtlcore.common.data.GTLMachines.LARGE_STEAM_HATCH;
 
-import org.jetbrains.annotations.NotNull;
+import lombok.Getter;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
@@ -48,31 +44,16 @@ public class GeneralPurposeSteamEngine extends WorkableMultiblockMachine impleme
 
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
             GeneralPurposeSteamEngine.class, WorkableMultiblockMachine.MANAGED_FIELD_HOLDER);
-    // if in millibuckets, this is 0.5, Meaning 2 mb of steam -> 1 EU
-    private static final double CONVERSION_RATE = 0.5D;
+
+    private static final double CONVERSION_RATE = 10.0D;
+    @Getter
     private final int max_parallels;
-    private boolean isOC;
     @Persisted
     private int amountOC;
 
     public GeneralPurposeSteamEngine(IMachineBlockEntity holder, int maxParallels, Object... args) {
         super(holder, args);
         max_parallels = maxParallels;
-    }
-
-    public static GTRecipe recipeModifier(MetaMachine machine, @NotNull GTRecipe recipe,
-                                          double reductionDuration) {
-        if (machine instanceof GeneralPurposeSteamEngine steamMachine) {
-            if (RecipeHelper.getInputEUt(recipe) > (steamMachine.isOC ? 128 : 32)) {
-                return null;
-            }
-            var result = GTRecipeModifiers.accurateParallel(machine, recipe, steamMachine.max_parallels, false)
-                    .getFirst();
-            recipe = result == recipe ? result.copy() : result;
-            recipe.duration = (int) Math.max(1, recipe.duration * reductionDuration /
-                    (steamMachine.isOC ? Math.pow(2, steamMachine.amountOC) : 1));
-        }
-        return recipe;
     }
 
     @Override
@@ -85,13 +66,13 @@ public class GeneralPurposeSteamEngine extends WorkableMultiblockMachine impleme
             var handler = itr.next();
             if (handler instanceof NotifiableFluidTank tank) {
                 if (tank.getFluidInTank(0).isFluidEqual(GTMaterials.Steam.getFluid(1))) {
-                    this.isOC = tank.getMachine().getDefinition() == LARGE_STEAM_HATCH;
+                    boolean isOC = tank.getMachine().getDefinition() == LARGE_STEAM_HATCH;
                     itr.remove();
                     if (!capabilitiesProxy.contains(IO.IN, EURecipeCapability.CAP)) {
                         capabilitiesProxy.put(IO.IN, EURecipeCapability.CAP, new ArrayList<>());
                     }
                     Objects.requireNonNull(capabilitiesProxy.get(IO.IN, EURecipeCapability.CAP))
-                            .add(new SteamEnergyRecipeHandler(tank, CONVERSION_RATE * (this.isOC ? Math.pow(3, this.amountOC) : 1)));
+                            .add(new SteamEnergyRecipeHandler(tank, CONVERSION_RATE * (isOC ? Math.pow(3, this.amountOC) : 1)));
                     return;
                 }
             }
