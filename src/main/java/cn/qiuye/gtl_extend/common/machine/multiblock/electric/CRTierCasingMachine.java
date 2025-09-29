@@ -15,12 +15,14 @@ import java.util.List;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
+import org.gtlcore.gtlcore.api.machine.multiblock.ParallelMachine;
+import org.gtlcore.gtlcore.common.data.GTLRecipeModifiers;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class CRTierCasingMachine extends WorkableElectricMultiblockMachine {
+public class CRTierCasingMachine extends WorkableElectricMultiblockMachine implements ParallelMachine {
 
     public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
             CRTierCasingMachine.class, WorkableMultiblockMachine.MANAGED_FIELD_HOLDER);
@@ -66,5 +68,10 @@ public class CRTierCasingMachine extends WorkableElectricMultiblockMachine {
     @Override
     public @NotNull ManagedFieldHolder getFieldHolder() {
         return MANAGED_FIELD_HOLDER;
+    }
+
+    @Override
+    public int getMaxParallel() {
+        return GTLRecipeModifiers.getHatchParallel(this);
     }
 }
