@@ -248,7 +248,7 @@ public class MultiBlockMachineA {
                         .where('#', Predicates.blocks(GetRegistries.getBlock("kubejs:molecular_coil")))
                         .where('$', Predicates.blocks(GCyMBlocks.CASING_HIGH_TEMPERATURE_SMELTING.get()))
                         .where('%', Predicates.blocks(ChemicalHelper.getBlock(TagPrefix.frameGt, GTMaterials.Neutronium)))
-                        .where('&', Predicates.blocks(ChemicalHelper.getBlock(TagPrefix.dust, GTMaterials.NaquadahAlloy)))
+                        .where('&', Predicates.blocks(ChemicalHelper.getBlock(TagPrefix.frameGt, GTMaterials.NaquadahAlloy)))
                         .where('*', Predicates.blocks(GTLBlocks.STELLAR_CONTAINMENT_CASING.get()))
                         .where('-', Predicates.blocks(GCyMBlocks.HEAT_VENT.get()))
                         .where('@', Predicates.blocks(GTLBlocks.MOLECULAR_CASING.get()))
