@@ -8,7 +8,10 @@ import org.gtlcore.gtlcore.utils.Registries;
 
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 
+import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
+
 import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.world.item.ItemStack;
 
 import java.util.function.Consumer;
 
@@ -47,6 +50,17 @@ public class VoidPumpRecipe {
                     .addData("CRTier", 2)
                     .save(provider);
         }
+        VOID_PUMP_RECIPES.recipeBuilder("gtl_extend_fluid_fluix")
+                .notConsumable(new ItemStack(Registries.getItem("kubejs:dust_cryotheum"), 64))
+                .outputFluids(fluidGelid())
+                .duration(500)
+                .EUt(VA[LuV])
+                .addData("CRTier", 2)
+                .save(provider);
+    }
+
+    private static FluidStack fluidGelid() {
+        return FluidStack.create(Registries.getFluid("kubejs:gelid_cryotheum"), 10000);
     }
 
     private static void ordinary(Consumer<FinishedRecipe> provider) {

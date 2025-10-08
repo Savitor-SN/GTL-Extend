@@ -14,6 +14,7 @@ import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.machine.ConditionalSubscriptionHandler;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
+import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockDisplayText;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.common.block.CoilBlock;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
@@ -46,7 +47,6 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 import com.hepdd.gtmthings.api.misc.WirelessEnergyManager;
 import com.hepdd.gtmthings.utils.TeamUtil;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 @MethodsReturnNonnullByDefault
@@ -59,12 +59,12 @@ public class GTLEXQuantumComputer extends NoEnergyMultiblockMachine
     public int allocatedCWUt = 0;
     @Persisted
     public long totalCWU = 0;
+    @Persisted
     public int maxCWUt = 0;
     private ICoilType coilType = CoilBlock.CoilType.CUPRONICKEL;
     @Persisted
     private UUID userId;// 绑定用户ID
-
-    String lastAllocatedCWUt = "";
+    String lastAllocatedCWUt = "0";
     boolean canProvideCWUt = true;
 
     private boolean hasNotEnoughEnergy;
@@ -102,7 +102,7 @@ public class GTLEXQuantumComputer extends NoEnergyMultiblockMachine
      * @return .
      */
     @Override
-    public int requestCWUt(int cwut, boolean simulate, @NotNull Collection<IOpticalComputationProvider> seen) {
+    public int requestCWUt(int cwut, boolean simulate, Collection<IOpticalComputationProvider> seen) {
         seen.add(this);
         if (!canProvideCWUt) return 0;
         return !hasNotEnoughEnergy ? allocatedCWUt(cwut, simulate) : 0;
@@ -128,7 +128,7 @@ public class GTLEXQuantumComputer extends NoEnergyMultiblockMachine
      * @return .
      */
     @Override
-    public int getMaxCWUt(@NotNull Collection<IOpticalComputationProvider> seen) {
+    public int getMaxCWUt(Collection<IOpticalComputationProvider> seen) {
         seen.add(this);
         return calculate(coilType.getCoilTemperature(), oc);
     }
@@ -138,7 +138,7 @@ public class GTLEXQuantumComputer extends NoEnergyMultiblockMachine
      * @return .
      */
     @Override
-    public boolean canBridge(@NotNull Collection<IOpticalComputationProvider> seen) {
+    public boolean canBridge(Collection<IOpticalComputationProvider> seen) {
         seen.add(this);
         return true;
     }
@@ -273,7 +273,7 @@ public class GTLEXQuantumComputer extends NoEnergyMultiblockMachine
 
     @Override
     public void addDisplayText(List<Component> textList) {
-        super.addDisplayText(textList);
+        MultiblockDisplayText.builder(textList, isFormed());
         if (isFormed()) {
             // 用户无线电网信息（公共显示部分）
             if (userId != null) {
@@ -290,8 +290,8 @@ public class GTLEXQuantumComputer extends NoEnergyMultiblockMachine
             textList.add(Component.translatable(
                     "gtceu.multiblock.hpca.computation", Component.literal(
                             lastAllocatedCWUt + " / " +
-                                    (calculate(coilType.getCoilTemperature(), oc) == Integer.MAX_VALUE ? TextUtil.full_color("无尽") : getMaxCWUt()))
-                            .append(Component.literal(" CWU/t"))
+                                    (calculate(coilType.getCoilTemperature(), oc) == Integer.MAX_VALUE ? TextUtil.full_color("无尽") : getMaxCWUt()) +
+                                    " CWU/t")
                             .withStyle(ChatFormatting.AQUA))
                     .withStyle(ChatFormatting.GRAY));
             textList.add(Component.translatable("gtl_extend_machine_circuit",

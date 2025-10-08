@@ -10,6 +10,7 @@
     "gtl.GTLGTAddonMixin",
     "gtl.MetaMachineMixinExMixin",
     "gtl.MultipleRecipesLogicMixin",
+    "gtl.SpaceElevatorModuleMachineMixin",
     "gtmt.WirelessEnergyMonitorMixin"
   ],
   "injectors": {

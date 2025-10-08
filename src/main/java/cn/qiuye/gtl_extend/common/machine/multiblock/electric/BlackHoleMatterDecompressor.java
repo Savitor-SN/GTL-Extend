@@ -32,7 +32,6 @@ import static cn.qiuye.gtl_extend.common.data.GTL_Extend_Materials.ETERNALBLUEDR
 
 import com.hepdd.gtmthings.api.misc.WirelessEnergyManager;
 import com.hepdd.gtmthings.utils.TeamUtil;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 @ParametersAreNonnullByDefault
@@ -64,7 +63,7 @@ public class BlackHoleMatterDecompressor extends NoEnergyMultiblockMachine {
     }
 
     @Nullable
-    public GTRecipe recipeModifier(MetaMachine machine, @NotNull GTRecipe recipe) {
+    public GTRecipe recipeModifier(MetaMachine machine, GTRecipe recipe) {
         int parallel = calculateParallel(); // 直接调用实例方法
         long euCost = getRecipeEUt(); // 直接调用实例方法
         if (machine instanceof BlackHoleMatterDecompressor BlackHoleMatterDecompressor && BlackHoleMatterDecompressor.userId != null && BlackHoleMatterDecompressor.oc > 0) {
@@ -167,13 +166,12 @@ public class BlackHoleMatterDecompressor extends NoEnergyMultiblockMachine {
             textList.add(Component.translatable("gtl_extend_machine_mode",
                     isInfinityDreamEnabled() ? "蓝梦模式" : "功率模式"));
 
-            int circuitConfig = 0;
             if (isInfinityDreamEnabled()) {
                 textList.add(Component.literal("永恒蓝梦: " +
                         FormattingUtil.formatNumbers(eternalbluedream) + " mB"));
                 textList.add(Component.literal("基础并行: " + BASE_PARALLEL));
             } else {
-                double actualMultiplier = getPowerMultiplier(circuitConfig) * Math.pow(2, calculateOverclockTimes());
+                double actualMultiplier = getPowerMultiplier() * Math.pow(2, calculateOverclockTimes());
                 String powerMultiplierDisplay = (actualMultiplier >= Double.MAX_VALUE / 1e3) ? "∞" : FormattingUtil.formatNumbers(actualMultiplier);
                 textList.add(Component.literal("当前功率倍率: " + powerMultiplierDisplay));
                 // 显示无线电网允许的最大功率（仅在非蓝梦模式下显示）
@@ -203,12 +201,12 @@ public class BlackHoleMatterDecompressor extends NoEnergyMultiblockMachine {
             textList.add(Component.literal("最终并行: " + calculateParallel()));
             textList.add(Component.translatable("gtl_extend_machine_circuit",
                     oc,  // 直接显示原始电路编号
-                    getPowerMultiplier(circuitConfig) // 仅计算倍率
+                    getPowerMultiplier() // 仅计算倍率
             ));
         }
     }
 
-    private double getPowerMultiplier(int circuitConfig) {
+    private double getPowerMultiplier() {
         // 明确倍率规则：电路编号限制到4，但显示仍用原始值
         int effectiveConfig = Math.min(oc, 4);
         return switch (effectiveConfig) {

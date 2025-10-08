@@ -12,6 +12,8 @@ import cn.qiuye.gtl_extend.common.data.machines.MultiBlock.Cattle_cattle_machine
 import cn.qiuye.gtl_extend.common.data.machines.MultiBlock.MultiBlockStructure;
 import cn.qiuye.gtl_extend.common.data.machines.MultiBlock.Platinum_basedProcessingHub.Platinum_basedProcessingHub_MultiBlockStructure;
 import cn.qiuye.gtl_extend.common.data.machines.MultiBlock.QuantumComputer.QuantumComputer;
+import cn.qiuye.gtl_extend.common.data.machines.MultiBlock.SuperfluidGeneralEnergyFurnace.SuperfluidGeneralEnergyFurnace;
+import cn.qiuye.gtl_extend.common.data.machines.MultiBlock.TimeSpaceBreaker.TimeSpaceBreaker;
 import cn.qiuye.gtl_extend.common.data.machines.MultiBlock.Void_Pump.Void_Pump_MultiBlockStructure;
 import cn.qiuye.gtl_extend.common.machine.multiblock.electric.*;
 import cn.qiuye.gtl_extend.common.machine.multiblock.steam.GeneralPurposeSteamEngine;
@@ -37,6 +39,7 @@ import com.gregtechceu.gtceu.common.data.*;
 import com.gregtechceu.gtceu.common.data.machines.GTResearchMachines;
 
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Blocks;
 
@@ -65,6 +68,7 @@ public class MultiBlockMachineA {
     public static final MultiblockMachineDefinition GENERAL_PURPOSE_STEAM_ENGINE;
     public static final MultiblockMachineDefinition GENERAL_PURPOSE_AE_PRODUCTION;
     public static final MultiblockMachineDefinition QUANTUM_COMPUTER;
+    public static final MultiblockMachineDefinition TIME_SPACE_BREAKER;
 
     static {
         GTLEXRegistration.REGISTRATE.creativeModeTab(() -> GTL_Extend_CreativeModeTabs.MACHINES_ITEM);
@@ -166,10 +170,8 @@ public class MultiBlockMachineA {
                         .where('~', Predicates.controller(blocks(definition.getBlock())))
                         .where(" ", Predicates.any())
                         .where('A', Predicates.blocks(HIGH_POWER_CASING.get())
-                                .or(Predicates.abilities(PartAbility.EXPORT_ITEMS).setPreviewCount(1))
                                 .or(Predicates.abilities(PartAbility.IMPORT_ITEMS).setPreviewCount(1))
                                 .or(Predicates.abilities(PartAbility.EXPORT_FLUIDS).setPreviewCount(1))
-                                .or(Predicates.abilities(PartAbility.IMPORT_FLUIDS).setPreviewCount(1))
                                 .or(Predicates.abilities(PartAbility.PARALLEL_HATCH).setMaxGlobalLimited(1))
                                 .or(Predicates.abilities(PartAbility.INPUT_LASER).setMaxGlobalLimited(1))
                                 .or(Predicates.abilities(PartAbility.INPUT_ENERGY).setMaxGlobalLimited(2)))
@@ -228,8 +230,9 @@ public class MultiBlockMachineA {
                     return recipe_s;
                 })
                 .tooltips(Component.literal(TextUtil.full_color("最大并行数：int")))
-                .tooltips(Component.literal(TextUtil.full_color("26个线圈就可以让你获得无与伦比的并行和跨配方并行")))
                 .tooltips(Component.literal(TextUtil.full_color("所有配方都为1s")))
+                .tooltips(Component.literal(TextUtil.full_color("物质在我们手中不过是玩具")))
+                .tooltips(Component.literal(TextUtil.full_color("可以随意捏造")))
                 .tooltips(Component.translatable("gtceu.multiblock.laser.tooltip"))
                 .tooltips(Component.translatable("gtceu.machine.multiple_recipes.tooltip"))
                 .tooltips(Component.translatable("gtceu.machine.perfect_oc"))
@@ -238,20 +241,26 @@ public class MultiBlockMachineA {
                         Component.translatable("gtceu.alloy_blast_smelter"),
                         Component.translatable("gtceu.alloy_smelter")))
                 .tooltipBuilder(GTL_EX_ADD)
-                .pattern(definition -> MultiBlockStructure.GENERAL_ENERGY_FURNACE
+                .pattern(definition -> SuperfluidGeneralEnergyFurnace.PATTERN
                         .where('~', Predicates.controller(blocks(definition.getBlock())))
                         .where(' ', Predicates.any())
-                        .where("c", blocks(GetRegistries.getBlock("gtceu:cleanroom_glass")))
-                        .where("a", Predicates.blocks(GCyMBlocks.CASING_HIGH_TEMPERATURE_SMELTING.get())
-                                .setMinGlobalLimited(10)
+                        .where('!', Predicates.blocks(GetRegistries.getBlock("kubejs:containment_field_generator")))
+                        .where('#', Predicates.blocks(GetRegistries.getBlock("kubejs:molecular_coil")))
+                        .where('$', Predicates.blocks(GCyMBlocks.CASING_HIGH_TEMPERATURE_SMELTING.get()))
+                        .where('%', Predicates.blocks(ChemicalHelper.getBlock(TagPrefix.frameGt, GTMaterials.Neutronium)))
+                        .where('&', Predicates.blocks(ChemicalHelper.getBlock(TagPrefix.dust, GTMaterials.NaquadahAlloy)))
+                        .where('*', Predicates.blocks(GTLBlocks.STELLAR_CONTAINMENT_CASING.get()))
+                        .where('-', Predicates.blocks(GCyMBlocks.HEAT_VENT.get()))
+                        .where('@', Predicates.blocks(GTLBlocks.MOLECULAR_CASING.get()))
+                        .where('A', Predicates.blocks(GCyMBlocks.CASING_HIGH_TEMPERATURE_SMELTING.get())
                                 .or(Predicates.abilities(PartAbility.EXPORT_ITEMS).setPreviewCount(1))
                                 .or(Predicates.abilities(PartAbility.IMPORT_ITEMS).setPreviewCount(1))
                                 .or(Predicates.abilities(PartAbility.EXPORT_FLUIDS).setPreviewCount(1))
                                 .or(Predicates.abilities(PartAbility.IMPORT_FLUIDS).setPreviewCount(1))
-                                .or(Predicates.abilities(PartAbility.INPUT_LASER).setMaxGlobalLimited(1))
+                                .or(Predicates.abilities(PartAbility.MAINTENANCE).setExactLimit(1))
+                                .or(Predicates.abilities(PartAbility.INPUT_LASER).setMaxGlobalLimited(2))
                                 .or(Predicates.abilities(PartAbility.INPUT_ENERGY).setMaxGlobalLimited(2)))
-                        .where("e", blocks(GetRegistries.getBlock("gtceu:heat_vent")))
-                        .where("f", Predicates.heatingCoils())
+                        .where('^', Predicates.blocks(GTLBlocks.ADVANCED_COMPRESSED_FUSION_COIL.get()))
                         .build())
                 .workableCasingRenderer(GTCEu.id("block/casings/gcym/high_temperature_smelting_casing"),
                         GTCEu.id("block/multiblock/fusion_reactor"), false)
@@ -469,9 +478,11 @@ public class MultiBlockMachineA {
                 .tooltips(Component.literal("特殊功能:"))
                 .tooltips(Component.literal("  - 需要绑定玩家无线电网供电"))
                 .tooltips(Component.literal("  - 自动从多方块结构中的流体容器消耗冷却液"))
+                .tooltips(Component.literal("特性？:"))
+                .tooltips(Component.literal("  - 退出重进后需要手动打开主机的GUI，否则无法提供算力，推荐使用服务器"))
                 .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH,
                         GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.PERFECT_OVERCLOCK_SUBTICK))
-                .appearanceBlock(COMPUTER_CASING)
+                .appearanceBlock(HIGH_POWER_CASING)
                 .tooltipBuilder(GTL_EX_ADD)
                 .pattern(definition -> QuantumComputer.PATTERN
                         .where('H', Predicates.controller(Predicates.blocks(definition.get())))
@@ -486,7 +497,7 @@ public class MultiBlockMachineA {
                         .where('E', Predicates.blocks(GTLBlocks.IRIDIUM_CASING.get()))
                         .where('F', Predicates.blocks(GCyMBlocks.CASING_LASER_SAFE_ENGRAVING.get()))
                         .where('G', Predicates.blocks(Blocks.NETHERITE_BLOCK))
-                        .where('I', Predicates.blocks(GetRegistries.getBlock("kubejs:spacetime_compression_field_generator")))
+                        .where('I', Predicates.blocks(GetRegistries.getBlock("kubejs:containment_field_generator")))
                         .where('J', Predicates.blocks(Blocks.BEACON))
                         .where('K', Predicates.blocks(AEBlocks.QUARTZ_VIBRANT_GLASS.block()))
                         .where('L', Predicates.blocks(Blocks.GLOWSTONE))
@@ -502,7 +513,58 @@ public class MultiBlockMachineA {
                         .where('V', Predicates.blocks(GTL_Extend_Blocks.DIMENSION_CORE.get()))
                         .where('W', Predicates.blocks(GTBlocks.ADVANCED_COMPUTER_CASING.get()))
                         .build())
-                .sidedWorkableCasingRenderer("block/casings/hpca/computer_casing",
+                .workableCasingRenderer(GTCEu.id("block/casings/hpca/high_power_casing"),
+                        GTCEu.id("block/multiblock/hpca"))
+                .register();
+
+        TIME_SPACE_BREAKER = GTLEXRegistration.REGISTRATE.multiblock("time_space_breaker", TimeSpaceBreakerMachine::new)
+                .rotationState(RotationState.NON_Y_AXIS)
+                .recipeTypes(GTLRecipeTypes.QFT_RECIPES,
+                        GTLRecipeTypes.DIMENSIONALLY_TRANSCENDENT_PLASMA_FORGE_RECIPES)
+                .appearanceBlock(HIGH_POWER_CASING)
+                .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH,
+                        GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.PERFECT_OVERCLOCK_SUBTICK))
+                .recipeModifier((machine, recipe, maxParallel, modifyDuration) -> ((TimeSpaceBreakerMachine) machine).recipeModifier(machine, recipe))
+                .tooltips(Component.translatable("gtceu.machine.available_recipe_map_2.tooltip",
+                        Component.translatable("gtceu.dimensionally_transcendent_plasma_forge"),
+                        Component.translatable("gtceu.qft")))
+                .tooltipBuilder(GTL_EX_ADD)
+                .pattern(definition -> TimeSpaceBreaker.PATTERN
+                        .where('~', Predicates.controller(blocks(definition.getBlock())))
+                        .where(' ', Predicates.any())
+                        .where('!', Predicates.blocks(GTLBlocks.DIMENSIONALLY_TRANSCENDENT_CASING.get()))
+                        .where('#', Predicates.blocks(GTLBlocks.COMPRESSED_FUSION_COIL_MK2_PROTOTYPE.get()))
+                        .where('$', Predicates.blocks(GTBlocks.FUSION_GLASS.get()))
+                        .where('%', Predicates.blocks(GTBlocks.SUPERCONDUCTING_COIL.get()))
+                        .where('&', Predicates.blocks(GetRegistries.getBlock("kubejs:annihilate_core")))
+                        .where('*', Predicates.blocks(GTBlocks.MACHINE_CASING_IV.get()))
+                        .where('+', Predicates.blocks(GTLBlocks.LAFIUM_MECHANICAL_CASING.get()))
+                        .where('-', Predicates.blocks(Blocks.REDSTONE_BLOCK))
+                        .where('=', Predicates.blocks(GTLBlocks.DIMENSION_CONNECTION_CASING.get()))
+                        .where('@', Predicates.blocks(Blocks.SEA_LANTERN))
+                        .where('A', Predicates.blocks(GetRegistries.getBlock("kubejs:dimension_creation_casing"))
+                                .or(Predicates.abilities(PartAbility.EXPORT_ITEMS))
+                                .or(Predicates.abilities(PartAbility.IMPORT_ITEMS))
+                                .or(Predicates.abilities(PartAbility.EXPORT_FLUIDS))
+                                .or(Predicates.abilities(PartAbility.IMPORT_FLUIDS))
+                                .or(Predicates.abilities(PartAbility.INPUT_LASER)))
+                        .where('B', Predicates.blocks(GTLBlocks.FUSION_CASING_MK5.get()))
+                        .where('C', Predicates.blocks(GTL_Extend_Blocks.DIMENSION_CORE.get()))
+                        .where('D', Predicates.blocks(Blocks.CHAIN))
+                        .where('E', Predicates.blocks(GTBlocks.LAMPS.get(DyeColor.byId(11)).get().defaultBlockState().getBlock()))
+                        .where('F', Predicates.blocks(AEBlocks.QUARTZ_SLAB.block()))
+                        .where('G', Predicates.blocks(AEBlocks.SMOOTH_QUARTZ_WALL.block()))
+                        .where('H', Predicates.blocks(AEBlocks.SMOOTH_QUARTZ_SLAB.block()))
+                        .where('I', Predicates.blocks(AEBlocks.QUARTZ_PILLAR_WALL.block()))
+                        .where('J', Predicates.blocks(GetRegistries.getBlock("kubejs:magic_core")))
+                        .where('K', Predicates.blocks(GTBlocks.LAMPS.get(DyeColor.byId(0)).get().defaultBlockState().getBlock()))
+                        .where('L', Predicates.blocks(GTBlocks.COIL_TRITANIUM.get()))
+                        .where('M', Predicates.blocks(GTLBlocks.ENHANCE_HYPER_MECHANICAL_CASING.get()))
+                        .where('N', Predicates.blocks(Blocks.SHROOMLIGHT))
+                        .where('O', Predicates.blocks(Blocks.GOLD_BLOCK))
+                        .where('^', Predicates.blocks(Blocks.GLOWSTONE))
+                        .build())
+                .workableCasingRenderer(GTCEu.id("block/casings/hpca/high_power_casing"),
                         GTCEu.id("block/multiblock/hpca"))
                 .register();
     }
