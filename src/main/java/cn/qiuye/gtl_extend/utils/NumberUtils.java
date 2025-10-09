@@ -43,10 +43,10 @@ public class NumberUtils {
     }
 
     public static String formatBigDecimalNumberOrSic(BigDecimal number) {
-        return number.compareTo(BigDecimal.valueOf(Long.MAX_VALUE)) > 0 ? FormattingUtil.DECIMAL_FORMAT_SIC_2F.format(number) : FormattingUtil.formatNumberReadable(number.longValue());
+        return number.compareTo(BigDecimal.valueOf(Long.MAX_VALUE)) > 0 ? FormattingUtil.DECIMAL_FORMAT_SIC_2F.format(number) : FormattingUtil.formatNumberReadable(number);
     }
 
     public static String formatBigIntegerNumberOrSic(BigInteger number) {
-        return number.compareTo(BigInteger.valueOf(Long.MAX_VALUE)) > 0 ? DECIMAL_FORMAT_SIC_2F.format(number) : formatNumberReadable(number.longValue());
+        return number.compareTo(BigInteger.valueOf(Long.MAX_VALUE)) > 0 ? DECIMAL_FORMAT_SIC_2F.format(number) : formatNumberReadable(new BigDecimal(number));
     }
 }
