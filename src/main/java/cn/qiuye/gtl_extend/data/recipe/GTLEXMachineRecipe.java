@@ -15,6 +15,7 @@ import org.gtlcore.gtlcore.common.data.machines.GeneratorMachine;
 import org.gtlcore.gtlcore.utils.Registries;
 
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
+import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKeys;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
@@ -32,8 +33,7 @@ import java.util.function.Consumer;
 import static cn.qiuye.gtl_extend.common.data.GTL_Extend_Blocks.DIMENSION_CORE;
 import static com.gregtechceu.gtceu.api.GTValues.*;
 import static com.gregtechceu.gtceu.common.data.GTMaterials.*;
-import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.ASSEMBLER_RECIPES;
-import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.ASSEMBLY_LINE_RECIPES;
+import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.*;
 import static org.gtlcore.gtlcore.common.data.GTLMaterials.*;
 import static org.gtlcore.gtlcore.common.data.GTLRecipeTypes.SUPRACHRONAL_ASSEMBLY_LINE_RECIPES;
 
@@ -256,6 +256,36 @@ public class GTLEXMachineRecipe {
                         .dataStack(GTL_Extend_Item.ADVANCED_DATA_MODULE.asStack())
                         .EUt(VA[MAX])
                         .CWUt(16384))
+                .save(provider);
+
+        SUPRACHRONAL_ASSEMBLY_LINE_RECIPES.recipeBuilder("time_space_breakes")
+                .inputItems(Registries.getItem("kubejs:suprachronal_mainframe_complex"), 128)
+                .inputItems(AdvancedMultiBlockMachine.DIMENSIONALLY_TRANSCENDENT_PLASMA_FORGE, 64)
+                .inputItems(org.gtlcore.gtlcore.common.data.machines.MultiBlockMachineA.QFT, 64)
+                .inputItems(Registries.getItem("kubejs:quantum_anomaly"), 256)
+                .inputItems(AdvancedMultiBlockMachine.EYE_OF_HARMONY, 128)
+                .inputItems(Registries.getItem("kubejs:annihilate_core"), 1024)
+                .inputItems(AdvancedMultiBlockMachine.CREATE_COMPUTATION, 16)
+                .inputItems(Registries.getItem("kubejs:chaotic_energy_core"), 64)
+                .inputItems(ChemicalHelper.get(TagPrefix.block, TranscendentMetal), 128)
+                .inputItems(Registries.getItem("kubejs:create_ultimate_battery"), 32)
+                .inputItems(Registries.getItem("kubejs:dimension_creation_casing"), 128)
+                .inputItems(MultiBlockMachineA.BLACK_HOLE_MATTER_DECOMPRESSOR)
+                .inputItems(Registries.getItem("kubejs:create_aggregatione_core"), 32)
+                .inputItems(CustomTags.MAX_CIRCUITS, 256)
+                .inputItems(Registries.getItem("kubejs:cosmic_singularity"), 32)
+                .inputItems(Registries.getItem("avaritia:eternal_singularity"), 256)
+                .inputFluids(GTLMaterials.DimensionallyTranscendentResidue.getFluid(1000000000))
+                .inputFluids(GTLMaterials.Eternity.getFluid(20000000))
+                .inputFluids(GTLMaterials.MagnetohydrodynamicallyConstrainedStarMatter.getFluid(20000000))
+                .inputFluids(GTLMaterials.SpaceTime.getFluid(200000000))
+                .outputItems(MultiBlockMachineA.TIME_SPACE_BREAKER)
+                .duration(1200)
+                .EUt(V[MAX] * 4194304)
+                .stationResearch(b -> b.researchStack(AdvancedMultiBlockMachine.DOOR_OF_CREATE.asStack())
+                        .dataStack(GTL_Extend_Item.ADVANCED_DATA_MODULE.asStack())
+                        .EUt(VA[MAX])
+                        .CWUt(114514))
                 .save(provider);
     }
 }
