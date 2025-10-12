@@ -29,7 +29,6 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 import com.hepdd.gtmthings.api.misc.WirelessEnergyManager;
 import com.hepdd.gtmthings.utils.TeamUtil;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 @ParametersAreNonnullByDefault
@@ -116,7 +115,7 @@ public class DimensionalPower extends NoEnergyMultiblockMachine implements IMach
     }
 
     @Nullable
-    public GTRecipe recipeModifier(@NotNull GTRecipe recipe) {
+    public GTRecipe recipeModifier(GTRecipe recipe) {
         if (this.oc == 0) return null;
         int parallel = getBaseParallel(); // 直接调用实例方法
         if (this.userid != null) {
@@ -171,7 +170,8 @@ public class DimensionalPower extends NoEnergyMultiblockMachine implements IMach
             textList.add(Component.translatable("gtmthings.machine.wireless_energy_monitor.tooltip.1",
                     NumberUtils.formatBigIntegerNumberOrSic(WirelessEnergyManager.getUserEU(userid))));
         }
-        textList.add(Component.translatable("gtl_extend_machine_circuit",
+        textList.add(Component.literal("产能：" + NumberUtils.formatBigIntegerNumberOrSic(outEUt()) + " EU/t"));
+        textList.add(Component.translatable("gtl_extend.machine.circuit",
                 oc,  // 直接显示原始电路编号
                 calculateOverclockTimes(oc) // 仅计算倍率
         ));

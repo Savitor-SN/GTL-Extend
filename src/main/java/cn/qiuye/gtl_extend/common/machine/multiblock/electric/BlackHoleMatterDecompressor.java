@@ -197,9 +197,9 @@ public class BlackHoleMatterDecompressor extends NoEnergyMultiblockMachine {
                         NumberUtils.formatBigIntegerNumberOrSic(WirelessEnergyManager.getUserEU(userId))));
             }
             // 公共信息
-            textList.add(Component.literal("启动耗能：" + FormattingUtil.formatNumbers(getRecipeEUt()) + "EU"));
+            textList.add(Component.literal("耗能：" + FormattingUtil.formatNumbers(getRecipeEUt()) + " EU/t"));
             textList.add(Component.literal("最终并行: " + calculateParallel()));
-            textList.add(Component.translatable("gtl_extend_machine_circuit",
+            textList.add(Component.translatable("gtl_extend.machine.circuit",
                     oc,  // 直接显示原始电路编号
                     getPowerMultiplier() // 仅计算倍率
             ));

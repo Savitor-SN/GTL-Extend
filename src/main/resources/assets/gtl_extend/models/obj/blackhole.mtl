@@ -1,0 +1,12 @@
+# Blender 4.4.0 MTL File: 'blackhole.blend'
+# www.blender.org
+
+newmtl m_9977b1b0-c4b4-5dbf-ba26-c744ef7f2871.001
+map_Kd #texture0
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 1

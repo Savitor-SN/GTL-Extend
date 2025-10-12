@@ -16,12 +16,12 @@ import org.joml.Quaternionf;
 public class Domain {
 
     static void Facing(Direction facing, PoseStack poseStack) {
-        double x = 0.5, y = 54.5, z = 0.5;
+        double x = 0.5, y = 30.5, z = 0.5;
         switch (facing) {
-            case NORTH -> z = 39.5;
-            case SOUTH -> z = -39.5;
-            case WEST -> x = 39.5;
-            case EAST -> x = -39.5;
+            case NORTH -> z = 5.5;
+            case SOUTH -> z = -5.5;
+            case WEST -> x = 5.5;
+            case EAST -> x = -5.5;
         }
         poseStack.pushPose();
         poseStack.translate(x, y, z);
@@ -29,8 +29,8 @@ public class Domain {
 
     static void pushPose(float tick, PoseStack poseStack, MultiBufferSource buffer, ResourceLocation Model) {
         poseStack.pushPose();
-        poseStack.scale(50.0F, 50.0F, 50.0F);
-        poseStack.mulPose(new Quaternionf().fromAxisAngleDeg(0F, 1F, 1F, (tick / 2) % 360F));
+        poseStack.scale(25.0F, 25.0F, 25.0F);
+        poseStack.mulPose(new Quaternionf().fromAxisAngleDeg(0F, 1F, 0F, (tick * 2) % 360F));
         ClientUtil.modelRenderer().renderModel(
                 poseStack.last(),
                 buffer.getBuffer(RenderType.translucent()),

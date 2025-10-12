@@ -7,9 +7,6 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.text.DecimalFormat;
 
-import static cn.qiuye.gtl_extend.utils.FormattingUtil.DECIMAL_FORMAT_SIC_2F;
-import static cn.qiuye.gtl_extend.utils.FormattingUtil.formatNumberReadable;
-
 import org.jetbrains.annotations.NotNull;
 
 public class NumberUtils {
@@ -43,10 +40,10 @@ public class NumberUtils {
     }
 
     public static String formatBigDecimalNumberOrSic(BigDecimal number) {
-        return number.compareTo(BigDecimal.valueOf(Long.MAX_VALUE)) > 0 ? FormattingUtil.DECIMAL_FORMAT_SIC_2F.format(number) : FormattingUtil.formatNumberReadable(number);
+        return FormattingUtil.formatNumberReadable(number);
     }
 
     public static String formatBigIntegerNumberOrSic(BigInteger number) {
-        return number.compareTo(BigInteger.valueOf(Long.MAX_VALUE)) > 0 ? DECIMAL_FORMAT_SIC_2F.format(number) : formatNumberReadable(new BigDecimal(number));
+        return FormattingUtil.formatNumberReadable(new BigDecimal(number));
     }
 }

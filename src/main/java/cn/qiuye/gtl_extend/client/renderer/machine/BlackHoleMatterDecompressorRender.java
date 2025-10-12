@@ -3,6 +3,8 @@ package cn.qiuye.gtl_extend.client.renderer.machine;
 import cn.qiuye.gtl_extend.GTL_Extend;
 import cn.qiuye.gtl_extend.common.machine.multiblock.electric.BlackHoleMatterDecompressor;
 
+import org.gtlcore.gtlcore.GTLCore;
+
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
@@ -35,7 +37,8 @@ public class BlackHoleMatterDecompressorRender extends WorkableCasingMachineRend
     private static final ResourceLocation BLACKHOLE_MODEL = GTL_Extend.id("obj/black_hole");
 
     public BlackHoleMatterDecompressorRender() {
-        super(GTCEu.id("block/casings/hpca/high_power_casing"), GTCEu.id("block/multiblock/cosmos_simulation"));
+        super(GTLCore.id("block/dimension_connection_casing"),
+                GTCEu.id("block/multiblock/cosmos_simulation"));
     }
 
     private static void renderBlackHole(float tick, PoseStack poseStack, MultiBufferSource buffer) {

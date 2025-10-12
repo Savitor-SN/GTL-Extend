@@ -2,6 +2,8 @@ package cn.qiuye.gtl_extend.mixin.gtl;
 
 import org.gtlcore.gtlcore.api.machine.multiblock.ParallelMachine;
 import org.gtlcore.gtlcore.api.machine.trait.ILockRecipe;
+import org.gtlcore.gtlcore.api.machine.trait.IRecipeCapabilityMachine;
+import org.gtlcore.gtlcore.api.recipe.IGTRecipe;
 import org.gtlcore.gtlcore.api.recipe.IParallelLogic;
 import org.gtlcore.gtlcore.api.recipe.RecipeRunnerHelper;
 import org.gtlcore.gtlcore.common.machine.trait.MultipleRecipesLogic;
@@ -10,6 +12,7 @@ import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
+import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMaintenanceMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
@@ -20,13 +23,12 @@ import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 
 import net.minecraft.nbt.CompoundTag;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.function.BiPredicate;
 
-import com.google.common.primitives.Ints;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import org.spongepowered.asm.mixin.*;
 
 @Mixin(MultipleRecipesLogic.class)
@@ -40,18 +42,41 @@ public class MultipleRecipesLogicMixin extends RecipeLogic implements ILockRecip
     @Final
     @Shadow(remap = false)
     private final BiPredicate<CompoundTag, IRecipeLogicMachine> dataCheck;
+    @Mutable
+    @Shadow(remap = false)
+    private double reductionRatio;
     @Unique
     private static final long MAX_THREADS = 1024;
 
+    public MultipleRecipesLogicMixin(ParallelMachine machine) {
+        this(machine, null);
+    }
+
     public MultipleRecipesLogicMixin(ParallelMachine machine, BiPredicate<CompoundTag, IRecipeLogicMachine> dataCheck) {
+        this(machine, dataCheck, 1.0F, 1.0F);
+    }
+
+    public MultipleRecipesLogicMixin(ParallelMachine machine, BiPredicate<CompoundTag, IRecipeLogicMachine> dataCheck, double reductionEUt, double reductionDuration) {
         super((IRecipeLogicMachine) machine);
         this.parallel = machine;
         this.dataCheck = dataCheck;
+        this.reductionRatio = reductionEUt * reductionDuration;
     }
 
     @Shadow(remap = false)
     public WorkableElectricMultiblockMachine getMachine() {
         return (WorkableElectricMultiblockMachine) super.getMachine();
+    }
+
+    @Shadow(remap = false)
+    protected double getEuMultiplier() {
+        IMaintenanceMachine maintenanceMachine = ((IRecipeCapabilityMachine) this.parallel).getMaintenanceMachine();
+        return maintenanceMachine != null ? (double) maintenanceMachine.getDurationMultiplier() * this.reductionRatio : this.reductionRatio;
+    }
+
+    @Shadow(remap = false)
+    protected double getTotalEuOfRecipe(GTRecipe recipe) {
+        return (double) (RecipeHelper.getInputEUt(recipe) * (long) recipe.duration);
     }
 
     /**
@@ -69,10 +94,11 @@ public class MultipleRecipesLogicMixin extends RecipeLogic implements ILockRecip
             } else {
                 Iterator<GTRecipe> iterator = this.lookupRecipeIterator();
                 GTRecipe output = GTRecipeBuilder.ofRaw().buildRawRecipe();
-                output.outputs.put(ItemRecipeCapability.CAP, new ArrayList<>());
-                output.outputs.put(FluidRecipeCapability.CAP, new ArrayList<>());
+                output.outputs.put(ItemRecipeCapability.CAP, new ObjectArrayList<>());
+                output.outputs.put(FluidRecipeCapability.CAP, new ObjectArrayList<>());
                 long totalEu = 0L;
                 long remain = (long) this.parallel.getMaxParallel() * MAX_THREADS;
+                double euMultiplier = this.getEuMultiplier();
 
                 while (remain > 0L && iterator.hasNext()) {
                     GTRecipe match = iterator.next();
@@ -83,11 +109,11 @@ public class MultipleRecipesLogicMixin extends RecipeLogic implements ILockRecip
                                 match = match.copy(ContentModifier.multiplier((double) p), false);
                             }
 
-                            match.parallels = Ints.saturatedCast(p);
-                            IParallelLogic.getRecipeOutputChance(this.machine, match);
+                            ((IGTRecipe) match).setRealParallels(p);
+                            match = IParallelLogic.getRecipeOutputChance(this.machine, match);
                             remain -= p;
                             if (RecipeRunnerHelper.handleRecipeInput(this.machine, match)) {
-                                totalEu += RecipeHelper.getInputEUt(match) * (long) match.duration;
+                                totalEu += (long) (this.getTotalEuOfRecipe(match) * euMultiplier);
                                 List<Content> item = match.outputs.get(ItemRecipeCapability.CAP);
                                 if (item != null) {
                                     output.outputs.get(ItemRecipeCapability.CAP).addAll(item);
@@ -113,6 +139,7 @@ public class MultipleRecipesLogicMixin extends RecipeLogic implements ILockRecip
                     long eut = d > (double) 20.0F ? maxEUt : (long) ((double) maxEUt * d / (double) 20.0F);
                     output.tickInputs.put(EURecipeCapability.CAP, List.of(new Content(eut, 10000, 10000, 0, null, null)));
                     output.duration = Math.min((int) Math.max(d, 1.0F), 20);
+                    IGTRecipe.of(output).setHasTick(true);
                     return output;
                 }
             }

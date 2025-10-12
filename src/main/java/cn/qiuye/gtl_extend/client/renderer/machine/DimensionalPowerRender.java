@@ -3,6 +3,8 @@ package cn.qiuye.gtl_extend.client.renderer.machine;
 import cn.qiuye.gtl_extend.GTL_Extend;
 import cn.qiuye.gtl_extend.common.machine.multiblock.electric.BlackHoleMatterDecompressor;
 
+import org.gtlcore.gtlcore.GTLCore;
+
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
@@ -34,7 +36,8 @@ public class DimensionalPowerRender extends WorkableCasingMachineRenderer implem
     private static final ResourceLocation SPACE_MODEL = GTL_Extend.id("obj/space");
 
     public DimensionalPowerRender() {
-        super(GTCEu.id("block/casings/hpca/high_power_casing"), GTCEu.id("block/multiblock/cosmos_simulation"));
+        super(GTLCore.id("block/dimension_connection_casing"),
+                GTCEu.id("block/multiblock/cosmos_simulation"));
     }
 
     /**

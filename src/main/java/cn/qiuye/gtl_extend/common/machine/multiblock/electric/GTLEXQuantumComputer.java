@@ -283,7 +283,7 @@ public class GTLEXQuantumComputer extends NoEnergyMultiblockMachine
                         NumberUtils.formatBigIntegerNumberOrSic(WirelessEnergyManager.getUserEU(userId))));
             }
             // 公共信息
-            textList.add(Component.literal("启动耗能：" + NumberUtils.formatBigIntegerNumberOrSic(energy()) + "EU"));
+            textList.add(Component.literal("启动耗能：" + NumberUtils.formatBigIntegerNumberOrSic(energy()) + " EU/t"));
             textList.add(Component.translatable("gtceu.multiblock.blast_furnace.max_temperature",
                     Component.translatable(FormattingUtil.formatNumbers(coilType.getCoilTemperature()) + "K")
                             .setStyle(Style.EMPTY.withColor(ChatFormatting.RED))));
@@ -294,7 +294,7 @@ public class GTLEXQuantumComputer extends NoEnergyMultiblockMachine
                                     " CWU/t")
                             .withStyle(ChatFormatting.AQUA))
                     .withStyle(ChatFormatting.GRAY));
-            textList.add(Component.translatable("gtl_extend_machine_circuit",
+            textList.add(Component.translatable("gtl_extend.machine.circuit",
                     oc  // 直接显示原始电路编号
             ));
 
