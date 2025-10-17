@@ -24,6 +24,7 @@ import com.lowdragmc.lowdraglib.misc.FluidTransferList;
 import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
 import com.lowdragmc.lowdraglib.side.fluid.IFluidTransfer;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
+import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -53,6 +54,9 @@ import org.jetbrains.annotations.Nullable;
 @ParametersAreNonnullByDefault
 public class GTLEXQuantumComputer extends NoEnergyMultiblockMachine
                                   implements IOpticalComputationProvider, IControllable {
+
+    public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
+            GTLEXQuantumComputer.class, NoEnergyMultiblockMachine.MANAGED_FIELD_HOLDER);
 
     @Persisted
     private int oc = 0;     // 当前电路配置编号
@@ -93,6 +97,11 @@ public class GTLEXQuantumComputer extends NoEnergyMultiblockMachine
                 }
             }
         }
+    }
+
+    @Override
+    public ManagedFieldHolder getFieldHolder() {
+        return MANAGED_FIELD_HOLDER;
     }
 
     /**

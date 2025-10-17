@@ -151,6 +151,7 @@ public class MultiBlockMachineA {
                                 .or(Predicates.abilities(PartAbility.EXPORT_ITEMS).setMaxGlobalLimited(1))
                                 .or(Predicates.abilities(PartAbility.IMPORT_FLUIDS).setMaxGlobalLimited(1))
                                 .or(Predicates.abilities(PartAbility.EXPORT_FLUIDS).setMaxGlobalLimited(1))
+                                .or(Predicates.abilities(PartAbility.MAINTENANCE).setMaxGlobalLimited(1))
                                 .or(Predicates.abilities(PartAbility.STEAM).setExactLimit(1)))
                         .build())
                 .workableCasingRenderer(GTCEu.id("block/casings/solid/machine_casing_bronze_plated_bricks"),

@@ -1,7 +1,6 @@
 package cn.qiuye.gtl_extend.utils;
 
 import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.math.MathContext;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
@@ -51,5 +50,4 @@ public class FormattingUtil {
         if (unit != null) sb.append(unit);
         return sb.toString();
     }
-
 }
